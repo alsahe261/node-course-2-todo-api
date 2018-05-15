@@ -1,4 +1,4 @@
-require('./config/config') 
+require('./config/config')
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,7 +10,7 @@ var {User} = require('./models/user');
 const {ObjectID} = require('mongodb');
 
 var app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -93,6 +93,17 @@ app.patch('/todos/:id', (req, res) => {
   }).catch((e) => {
     res.status(400).send();
   })
+});
+
+// POST /users
+app.post('/users', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+  user.save().then((user) =>{
+    res.send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
 });
 
 app.listen(port, () => {
